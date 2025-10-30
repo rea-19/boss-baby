@@ -55,8 +55,16 @@
     <!-- login form -->
     <form id="loginForm">
       <h1>Welcome Back</h1>
+      <h4>Log in to scan your member card at events!</h4>
       <input type="email" placeholder="Email" required />
       <input type="password" placeholder="Password" required />
+
+      <!-- terms and conditions https://codepen.io/yatil/pen/wKYNjx -->
+      <div class="tacbox">
+        <input id="checkbox" type="checkbox" />
+        <label for="checkbox"> I agree to these <a href="#">terms & conditions</a>.</label>
+      </div>
+
       <a href="#">Forgot password?</a>
       <button type="submit">Sign In</button>
       <p style="text-align:center;margin-top:15px;">Don’t have an account?
@@ -67,10 +75,18 @@
     <!-- sign up form -->
     <form id="signupForm" style="display:none;">
       <h1>Create Account</h1>
+      <h4> Join Parent Pal today to earnt points and redeem discounts today!</h4>
       <input type="text" placeholder="Full Name" required />
       <input type="email" placeholder="Email" required />
       <input type="tel" placeholder="Phone Number" pattern="[0-9]{8,15}" required />
       <input type="password" placeholder="Password" required />
+
+      <!-- terms and conditions https://codepen.io/yatil/pen/wKYNjx -->
+      <div class="tacbox">
+        <input id="checkbox" type="checkbox" />
+        <label for="checkbox"> I agree to these <a href="#">terms & conditions</a>.</label>
+      </div>
+      
       <button type="submit">Sign Up</button>
       <p style="text-align:center;margin-top:15px;">Already have an account?
         <a href="#" id="showLogin">Sign in</a>
