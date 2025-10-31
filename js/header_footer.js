@@ -1,3 +1,9 @@
+//AI (ChatGPT) has been used with this code, for the following purposes: 
+// to remove redundant code
+// to error-check or correct, or to give advice on where to check for problems
+// All base code is done by hand and with the help of online templated. AI changes have been changed and edited and have been used to improve, not to do the code itself. 
+
+
 document.addEventListener('DOMContentLoaded', () => {
     loadHeader();
     setTimeout(autoSlideshow, 100); 
