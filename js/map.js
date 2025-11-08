@@ -7,17 +7,22 @@ AI Generative Tool (Copilot) is use in this file, for the following purposes:
 
 // code was also referenced from https://leafletjs.com and from course practical Week 6 to apply maps functionality
 
+// Initialize the Leaflet map centered on Brisbane with zoom level 11
 const map = L.map("map").setView([-27.47, 153.03], 11);
+
+// Add OpenStreetMap tiles as the base layer
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-  attribution: "Map data © OpenStreetMap contributors",
-  maxZoom: 18
+  attribution: "Map data © OpenStreetMap contributors", // Attribution text
+  maxZoom: 18 // Maximum zoom level allowed
 }).addTo(map);
 
+// Define custom icons for different marker types
 const iconEvents = L.icon({ iconUrl: "/src/events-black.png", iconSize: [32, 32], iconAnchor: [16, 32] });
 const iconMarkets = L.icon({ iconUrl: "/src/markets-black.png", iconSize: [32, 32], iconAnchor: [16, 32] });
 const iconParks = L.icon({ iconUrl: "/src/park-black.png", iconSize: [32, 32], iconAnchor: [16, 32] });
 const iconToilet = L.icon({ iconUrl: "/src/toilet-black.png", iconSize: [32, 32], iconAnchor: [16, 32] });
 
+// Create separate layer groups for each marker category and add them to the map
 const allMarkers = {
   events: L.layerGroup().addTo(map),
   markets: L.layerGroup().addTo(map),
@@ -25,6 +30,7 @@ const allMarkers = {
   toilet: L.layerGroup().addTo(map)
 };
 
+// Generate HTML content for popups 
 function createPopupHTML({ name, cost, date, address, description }) {
   return `
     <div class="popup-card">
@@ -39,7 +45,7 @@ function createPopupHTML({ name, cost, date, address, description }) {
   `;
 }
 
-
+// Predefined coordinates for known locations
 const preGeocodedLocations = {
   // Markets
   "Manly Creative Markets": [-27.4483, 153.1831],
@@ -72,17 +78,23 @@ const preGeocodedLocations = {
   "New Farm Park": [-27.4567, 153.0465]
 };
 
+// Process and display event markers on the map
 function processEvents(records) {
   records.forEach(record => {
     const f = record.fields || {};
+
+    // Try to get coordinates from geo_point_2d or geometry
     let coords = f.geo_point_2d || (record.geometry?.coordinates ? [...record.geometry.coordinates].reverse() : null);
 
+    // Fallback to pre-geocoded location if available
     if (!coords && f.location && preGeocodedLocations[f.location]) {
       coords = preGeocodedLocations[f.location];
     }
 
+    // Skip if no coordinates found
     if (!coords) return; 
 
+    // Create popup content
     const popup = createPopupHTML({
       name: f.event_name || f.subject || "Event",
       cost: f.cost || "Free",
@@ -96,6 +108,8 @@ function processEvents(records) {
 
   console.log("Finished processing events");
 }
+
+// Process and display market markers on the map
 function processMarkets(records) {
   records.forEach(record => {
     const f = record.fields || {};
@@ -107,8 +121,10 @@ function processMarkets(records) {
 
     console.log("Market name:", name, "| Location:", address);
 
+    // Try to get coordinates from geo_point_2d or geometry
     let coords = f.geo_point_2d || (record.geometry?.coordinates ? [...record.geometry.coordinates].reverse() : null);
 
+    // Fallback: fuzzy match name to preGeocodedLocations
     if (!coords && name) {
       const match = Object.keys(preGeocodedLocations).find(k =>
         k.toLowerCase() === name.toLowerCase() ||
@@ -141,18 +157,24 @@ function processMarkets(records) {
   console.log("Finished processing markets");
 }
 
+// Process and display park markers on the map
 function processParks(records) {
   records.forEach(record => {
     const f = record.fields || {};
+
+    // Try to get coordinates
     const coords = f.geo_point_2d || (record.geometry?.coordinates ? [...record.geometry.coordinates].reverse() : null);
     if (!coords) return;
 
+    // Create simple popup with park name and suburb
     const popup = `
       <div class="popup-card">
         <span class="popup-title">${f.park_name || "Park"}</span><br>
         <strong>Suburb:</strong> ${f.suburb || "Unknown"}
       </div>
     `;
+
+    // Add marker to the parks layer
     L.marker(coords, { icon: iconParks }).bindPopup(popup).addTo(allMarkers.parks);
   });
 }
@@ -162,6 +184,7 @@ function processToilets(records) {
     const f = record.fields || {};
     if (!f.latitude || !f.longitude) return;
 
+    // Construct HTML for the popup with toilet details
     const popup = `
       <div class="popup-card">
         <span class="popup-title">${f.name || "Toilet"}</span><br>
@@ -174,6 +197,8 @@ function processToilets(records) {
         </div>
       </div>
     `;
+
+    // Add a toilet marker with popup to the map
     L.marker([f.latitude, f.longitude], { icon: iconToilet }).bindPopup(popup).addTo(allMarkers.toilet);
   });
 }
@@ -183,8 +208,8 @@ Promise.all([
   fetch("https://data.brisbane.qld.gov.au/api/records/1.0/search/?dataset=library-events&q=&rows=500").then(r => r.json()),
   fetch("https://data.brisbane.qld.gov.au/api/records/1.0/search/?dataset=infants-and-toddlers-events&q=&rows=500").then(r => r.json())
 ]).then(([lib, toddlers]) => {
-  processEvents(lib.records);
-  processEvents(toddlers.records);
+  processEvents(lib.records);       // Add library events to map
+  processEvents(toddlers.records);  // Add toddler events to map
 }).catch(err => console.error("Events fetch error:", err));
 
 // Markets 
@@ -192,35 +217,36 @@ fetch("https://data.brisbane.qld.gov.au/api/records/1.0/search/?dataset=markets-
   .then(res => res.json())
   .then(data => {
     console.log("Markets API response:", data);
-    processMarkets(data.records);
+    processMarkets(data.records); // Add market markers to map
   })
   .catch(err => console.error("Markets fetch error:", err));
 
 // Parks
 fetch("https://data.brisbane.qld.gov.au/api/records/1.0/search/?dataset=park-locations&q=&rows=500")
   .then(r => r.json())
-  .then(data => processParks(data.records))
+  .then(data => processParks(data.records)) // Add park markers to map
   .catch(err => console.error("Parks error:", err));
 
 // Toilets
 fetch("https://data.brisbane.qld.gov.au/api/records/1.0/search/?dataset=public-toilets-in-brisbane&q=&rows=500")
   .then(r => r.json())
-  .then(data => processToilets(data.records))
+  .then(data => processToilets(data.records)) // Add toilet markers to map
   .catch(err => console.error("Toilets error:", err));
 
 document.addEventListener("DOMContentLoaded", () => {
-  const state = { events: true, markets: true, parks: true, toilet: true };
+  const state = { events: true, markets: true, parks: true, toilet: true };   // Initial visibility state
 
   document.querySelectorAll(".filter-button").forEach(btn => {
-    const type = btn.dataset.type;
+    const type = btn.dataset.type;    // Get marker type from button
     btn.addEventListener("click", () => {
-      state[type] = !state[type];
+      state[type] = !state[type];     // Toggle visibility state
+
       if (state[type]) {
-        map.addLayer(allMarkers[type]);
-        btn.classList.add("active");
+        map.addLayer(allMarkers[type]);   // Show layer
+        btn.classList.add("active");      //Highlight button 
       } else {
-        map.removeLayer(allMarkers[type]);
-        btn.classList.remove("active");
+        map.removeLayer(allMarkers[type]);  //Hide layer
+        btn.classList.remove("active");     //Unhighlighted button 
       }
     });
   });
