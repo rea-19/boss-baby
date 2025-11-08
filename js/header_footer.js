@@ -4,12 +4,13 @@
 // All base code is done by hand and with the help of online templated. AI changes have been changed and edited and have been used to improve, not to do the code itself. 
 
 
+// ensures the header and slideshow (slideshow for homepage only) are loaded dynamically
 document.addEventListener('DOMContentLoaded', () => {
     loadHeader();
     setTimeout(autoSlideshow, 100); 
 });
 
-// load different header for loggen in vs not logged in users
+// load different header for logged in vs not logged in users
 // referenced from https://www.youtube.com/watch?v=YqUdP0_RbTc
 function loadHeader() {
     fetch("/html/include/header.html")
@@ -83,6 +84,7 @@ function initHeader() {
 
         const logoutBtnDropdown = document.getElementById("logoutBtnDropdown");
         if (logoutBtnDropdown) {
+            // ensures the local info is deleted to show the non-logged/default  in version 
             logoutBtnDropdown.onclick = e => {
                 e.preventDefault();
                 if (confirm("Log out?")) {
@@ -95,6 +97,8 @@ function initHeader() {
         }
 
     } else {
+
+        // if the user is not logged in then the login/sig up pop up appears instead of the profile button + dropdown menu
         if (profileBtn) {
             profileBtn.style.display = "inline-block";
             profileBtn.href = "#";
@@ -118,6 +122,8 @@ function initHeader() {
     updateProgressBar();
 }
 
+
+// the automatic slideshow on the homepage 
 function autoSlideshow() {
     const slides = document.querySelectorAll('.slideshow-with-text .slide');
     if (slides.length === 0) return;
@@ -125,6 +131,7 @@ function autoSlideshow() {
     let currentSlide = 0;
     const intervalTime = 10; 
 
+    // ensures the slideshow switches and shows different images 
     function showSlide(n) {
 
         slides.forEach(slide => {
@@ -175,6 +182,8 @@ function updateProgressBar() {
     const notSignedInBar = document.getElementById("not-signedin-progressbar");
     const signedInBar = document.getElementById("signedin-progressbar");
 
+    
+    // if the page is not index.html then the header is made transparent for the slideshow 
     const isHomePage = window.location.pathname === '/' || window.location.pathname.endsWith('/index.html');
     
     if (isHomePage) {
@@ -185,6 +194,7 @@ function updateProgressBar() {
 
     if (!notSignedInBar || !signedInBar) return;
 
+    // if the user is signed in, the profile button unlocks the dropdown menu so users can then access the My Events and Rewards page (and log out if needed)
     if (loggedIn) {
         notSignedInBar.style.display = "none";
         signedInBar.style.display = "block";
@@ -277,6 +287,7 @@ function initPopup() {
         loginForm.style.display = 'flex';
     };
 
+    // if user enters data, it is saved as a new user in local storage so next time they are able to simply log in 
     signupForm.addEventListener('submit', e => {
         e.preventDefault();
         const email = signupForm.querySelector('input[type="email"]').value.trim();
@@ -302,6 +313,7 @@ function initPopup() {
         initHeader();
     });
 
+    // ensures the details provided by the user are valid
     loginForm.addEventListener('submit', e => {
         e.preventDefault();
         const email = loginForm.querySelector('input[type="email"]').value.trim();
@@ -318,6 +330,7 @@ function initPopup() {
     });
 }
 
+// footer is loaded dynamically 
 fetch("/html/include/footer.html")
     .then(res => res.text())
     .then(data => document.getElementById("footer").innerHTML = data);

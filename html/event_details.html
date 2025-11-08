@@ -1,39 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!DOCTYPE html> <!-- html5 -->
+<html lang="en"> 
+<head><!-- this section is not shown on the webpage -->
+    <meta charset="UTF-8"> <!-- ensures all types of characters and symbols can be used-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- makes the scalable for all device screen sizes-->
     <title>Event</title>
-    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/main.css"> <!-- the formatting this page follows is in main.css-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" />
 </head>
-<body>
+<body> <!-- this section is visible on the webpage -->
     <!-- Header -->
-    <div id="header"></div>
+    <div id="header"></div> <!-- dynamically loads -->
 
-    <!-- Event Details -->
+    <!-- this section is dynamically loaded due to the direct connection with js -->
+    <!-- Event Details --> <!-- the 'event-details' is directly linked to event_details.js which decides what information needs to be shown in what order-->
     <section id="event-details"></section>
 
-    <!-- Write Review Button -->
+    <!-- Write Review Button --> 
+     <!-- this is the button that users can press if they want to write a review -->
     <div class="write-review-section" style="text-align: center; margin: 20px 0;">
       <button id="writeReviewBtn" class="action-button primary">
-        <i class="fa-solid fa-pen"></i> Write Review
+        <i class="fa-solid fa-pen"></i> Write Review <!-- utilised the font library mentioned above for the pen  -->
       </button>
-    </div>
+    </div> 
 
     <!-- Review Popup -->
+    <!-- prompts a pop up form when the write review button is pressed-->
     <div id="reviewPopup" class="popup">
       <div class="popup-content">
         <span class="close">&times;</span>
         <form id="reviewForm">
           <label for="reviewerChoice">Post as:</label>
-          <select id="reviewerChoice">
+          <select id="reviewerChoice"> <!-- dropdown option from anonymous or named-->
             <option value="anonymous">Anonymous</option>
             <option value="named">Named</option>
           </select>
 
           <div id="nameField" style="display: none;">
-            <input type="text" id="reviewerName" placeholder="Enter your name">
+            <input type="text" id="reviewerName" placeholder="Enter your name"> <!-- empty field for users to input -->
           </div>
 
           <textarea id="reviewText" placeholder="Write your review..."></textarea>
@@ -45,6 +48,7 @@
       </div>
     </div>
 
+    <!-- a pr-existing block of reviews has been embedded onto the webpage to provide a example of what this feature would look like if it was properly implemented-->
     <div class ="reviews"> 
         <!-- Javacript library used: Elfsight All-in-One Reviews | Untitled All-in-One Reviews: https://elfsight.com/html-widgets/ -->
         <script src="https://elfsightcdn.com/platform.js" async></script>
@@ -55,10 +59,10 @@
     <div id="footer"></div>
 
     <!-- Scripts -->
-    <script src="/js/header_footer.js"></script>
+    <script src="/js/header_footer.js"></script><!-- loads the header and footer (ensures it is consistent with all other pages)-->
     <script src="/js/rewards_logic.js"></script> <!-- global points system -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="/js/event_details.js"></script>
-    <script src="/js/rewards_logic.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script><!-- a Js library which was used to ensure the event handling is easier -->
+    <script src="/js/event_details.js"></script> <!-- ensures the latest event details (from the js) is being shown -->
+    
 </body>
 </html>
